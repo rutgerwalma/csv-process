@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  </head>
+  <body>
+    <main>
+      <div id="input">
+        <div class="input-container">
+          <input type="file" id="csvFile" name="csvFile" accept=".csv" />
+          <label for="csvFile" class="file-upload-label">Choose file</label>
+          <span class="file-name" id="file-selected"></span>
+          <hr />
+          <div class="input-field-container">
+            <input type="text" id="filterText" placeholder="Type searchword.." />
+          </div>
+          <hr />
+          <div class="input-field-container">
+            <input type="text" id="fromDate" placeholder="Select Date.." />
+            <input type="text" id="toDate" placeholder="Select Date.." />
+          </div>
+          <hr />
+          <div class="input-field-container">
+            <select id="nameSelect" required>
+              <option class="option-placeholder" disabled selected>Select name field..</option>
+            </select>
+            <select id="amountSelect" required>
+              <option class="option-placeholder" disabled selected>Select amount field..</option>
+            </select>
+            <select id="dateSelect" required>
+              <option class="option-placeholder" disabled selected>Select date field..</option>
+            </select>
+          </div>
+          <hr />
+          <button id="upload" name="upload">Submit</button>
+        </div>
+      </div>
+      <div id="output">
+        <div class="table-container">
+          <table id="output-table" cellspacing="0">
+            <tr>
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <footer></footer>
+    </main>
+  </body>
+</html>
