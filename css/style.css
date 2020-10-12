@@ -33,7 +33,7 @@ footer {
   display: grid;
   justify-content: center;
   align-content: center;
-  background-image: url(/background.jpg);
+  background-image: url(/assets/img/background.jpg);
 }
 #output {
   grid-row: 3;
