@@ -3,16 +3,16 @@ var formatter = new Intl.NumberFormat("nl-NL", {
   currency: "EUR",
 });
 
-$(document).ready(function () {
+$(document).ready(() => {
   $("#output-table").css("visibility", "hidden");
-  $("#upload").click(function (e) {
+  $("#upload").click((e) => {
     var config = {
       header: true,
       skipEmptyLines: true,
       dynamicTyping: true,
       delimiter: ";",
       quoteChar: '"',
-      complete: function (results, file) {
+      complete: (results, file) => {
         console.log("Parsing complete:", results, file);
         var filter = $("#filterText").val();
         var fromDate = $("#fromDate").val();
@@ -27,10 +27,10 @@ $(document).ready(function () {
 
     $("#csvFile").parse({
       config: config,
-      before: function (file, inputElem) {
+      before: (file, inputElem) => {
         console.log("Parsing file...", file);
       },
-      error: function (err, file) {
+      error: (err, file) => {
         console.log("ERROR:", err, file);
         firstError = firstError || err;
         errorCount++;
@@ -38,20 +38,20 @@ $(document).ready(function () {
     });
   });
 
-  $("#csvFile").bind("change", function () {
+  $("#csvFile").bind("change", () => {
     var fileName = "";
     fileName = $(this).val().replace("C:\\fakepath\\", "");
     $("#file-selected").html(fileName);
   });
 
-  $("#csvFile").bind("change", function () {
+  $("#csvFile").bind("change", () => {
     var config = {
       header: true,
       skipEmptyLines: true,
       dynamicTyping: true,
       delimiter: ";",
       quoteChar: '"',
-      complete: function (results) {
+      complete: (results) => {
         getHeaders(results);
       },
       encoding: "utf-8",
@@ -59,10 +59,10 @@ $(document).ready(function () {
 
     $("#csvFile").parse({
       config: config,
-      before: function (file, inputElem) {
+      before: (file, inputElem) => {
         console.log("Parsing file for headers...", file);
       },
-      error: function (err, file) {
+      error: (err, file) => {
         console.log("ERROR:", err, file);
         firstError = firstError || err;
         errorCount++;
@@ -70,7 +70,7 @@ $(document).ready(function () {
     });
   });
 
-  $(document).ready(function () {
+  $(document).ready(() => {
     if ($("#csvFile").get(0).files.length > 0) {
       var config = {
         header: true,
@@ -78,7 +78,7 @@ $(document).ready(function () {
         dynamicTyping: true,
         delimiter: ";",
         quoteChar: '"',
-        complete: function (results) {
+        complete: (results) => {
           getHeaders(results);
         },
         encoding: "utf-8",
@@ -86,10 +86,10 @@ $(document).ready(function () {
 
       $("#csvFile").parse({
         config: config,
-        before: function (file, inputElem) {
+        before: (file, inputElem) => {
           console.log("Parsing file for headers...", file);
         },
-        error: function (err, file) {
+        error: (err, file) => {
           console.log("ERROR:", err, file);
           firstError = firstError || err;
           errorCount++;
@@ -129,7 +129,7 @@ function getHeaders(results) {
   var selectIdArray = ["nameSelect", "amountSelect", "dateSelect"];
 
   selectIdArray.forEach((select) => {
-    $.each(results.meta["fields"], function (i) {
+    $.each(results.meta["fields"], (i) => {
       $("#" + select).append(
         $("<option>", {
           value: results.meta["fields"][i],
