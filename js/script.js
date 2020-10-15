@@ -104,13 +104,20 @@ $(document).ready(function () {
     $("#file-selected").html(fileName);
   }
 
-  $("#fromDate").flatpickr({
+  var fromDatepicker = $("#fromDate").flatpickr({
     altInput: true,
     altFormat: "d-m-Y",
     dateFormat: "Y-m-d",
     maxDate: "today",
+    onClose: (selectedDates, dateStr, instance) => {
+      toDatepicker.set("minDate", dateStr);
+    },
+    onChange: () => {
+      toDatepicker.open();
+    },
   });
-  $("#toDate").flatpickr({
+
+  var toDatepicker = $("#toDate").flatpickr({
     altInput: true,
     altFormat: "d-m-Y",
     dateFormat: "Y-m-d",
