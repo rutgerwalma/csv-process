@@ -20,6 +20,7 @@
     <main>
       <div id="input">
         <div id="svg_wrap"></div>
+
         <section>
           <div class="input-field-container">
             <label class="section-title"><i class="fas fa-upload"></i>Upload csv file</label>
@@ -41,21 +42,38 @@
             <select id="dateSelect" required>
               <option class="option-placeholder" disabled selected>Select date field..</option>
             </select>
+
+            <div class="radio-section-container">
+              <label class="section-title">My file has...</label>
+              <div class="radio-container">
+                <label for="drawDepositColumn1">
+                  <input type="radio" name="drawDeposit" id="drawDepositColumn1" class="radio-button" value="true" />
+                  A column value to seperate draws and deposit amounts
+                </label>
+              </div>
+              <div class="radio-container">
+                <label for="drawDepositColumn2">
+                  <input type="radio" name="drawDeposit" id="drawDepositColumn2" class="radio-button" value="false" />
+                  Negative and positive amount values
+                </label>
+              </div>
+            </div>
           </div>
         </section>
 
         <section>
           <div class="input-field-container">
-            <label>Type searchword</label>
+            <label class="section-title">Type searchword</label>
             <input type="text" id="filterText" placeholder="Type searchword.." />
           </div>
           <hr />
           <div class="input-field-container">
-            <label>Select timeframe</label>
+            <label class="section-title">Select timeframe</label>
             <input type="text" id="fromDate" placeholder="From.." />
             <input type="text" id="toDate" placeholder="To.." />
           </div>
         </section>
+
         <div class="button-container">
           <button class="button" id="prev"><i class="fas fa-arrow-left"></i></button>
           <button class="button" id="next"><i class="fas fa-arrow-right"></i></button>
