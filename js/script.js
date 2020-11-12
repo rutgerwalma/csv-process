@@ -70,6 +70,34 @@ $(document).ready(() => {
     });
   });
 
+  $("#drawDepositSelect").change(() => {
+    var columnName = $("#drawDepositSelect").val();
+
+    var config = {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: true,
+      delimiter: ";",
+      quoteChar: '"',
+      complete: (results) => {
+        getValues(columnName, results.data);
+      },
+      encoding: "utf-8",
+    };
+
+    $("#csvFile").parse({
+      config: config,
+      before: (file, inputElem) => {
+        console.log("Parsing file for headers...", file);
+      },
+      error: (err, file) => {
+        console.log("ERROR:", err, file);
+        firstError = firstError || err;
+        errorCount++;
+      },
+    });
+  });
+
   $(document).ready(() => {
     if ($("#csvFile").get(0).files.length > 0) {
       var config = {
@@ -117,10 +145,18 @@ $(document).ready(() => {
     dateFormat: "Y-m-d",
     maxDate: "today",
   });
+
+  $("#drawDepositColumn1").on("change", function () {
+    $(".drawDepositColumn1-container").css("display", "block");
+  });
+
+  $("#drawDepositColumn2").on("change", function () {
+    $(".drawDepositColumn1-container").css("display", "none");
+  });
 });
 
 function getHeaders(results) {
-  var selectIdArray = ["nameSelect", "amountSelect", "dateSelect"];
+  var selectIdArray = ["nameSelect", "amountSelect", "dateSelect", "drawDepositSelect"];
 
   selectIdArray.forEach((select) => {
     $.each(results.meta["fields"], (i) => {
@@ -134,8 +170,29 @@ function getHeaders(results) {
   });
 }
 
+function getValues(columnName, results) {
+  var selectIdArray = ["drawDepositPositiveSelect", "drawDepositNegativeSelect"];
+  selectIdArray.forEach((select) => {
+    results.forEach((transaction) => {
+      var value = transaction[columnName];
+
+      if ($("#" + select + " option[value='" + value + "']").val() === undefined) {
+        $("#" + select).append(
+          $("<option>", {
+            value: value,
+            text: value,
+          })
+        );
+      }
+    });
+  });
+  $("#drawDepositPositiveSelect").prop("disabled", false);
+  $("#drawDepositNegativeSelect").prop("disabled", false);
+}
+
 function printData(resultsArray, totalAmount) {
   totalAmount = formatter.format(totalAmount);
+  $("main").css("grid-template-rows", "1fr 1fr");
   $("#output-table").css("visibility", "visible");
   $("#output-table").empty();
   $("#output-table").append("<tr><th>Name</th><th>Amount</th><th>Date</th></th>");
@@ -147,6 +204,27 @@ function printData(resultsArray, totalAmount) {
   });
 
   $("#output-table").append("<tr>" + "<td><b>Total</b></td>" + "<td colspan='2'><b>" + totalAmount + "</b></td>" + "</tr>");
+  $(".arrow").css("visibility", "visible");
+  $("#output").css("display", "block");
+
+  $("html, body").animate(
+    {
+      scrollTop: $("#output").offset().top,
+    },
+    1200
+  );
+
+  $("#backToTopButton").css("display", "block");
+}
+
+function backToTop() {
+  $("html, body").animate(
+    {
+      scrollTop: $("#input").offset().top,
+    },
+    1200
+  );
+  $("#backToTopButton").css("display", "none");
 }
 
 function processData(array, filter, fromDate, toDate) {
@@ -190,7 +268,7 @@ function processData(array, filter, fromDate, toDate) {
 }
 $(document).ready(function () {
   var base_color = "rgb(230,230,230)";
-  var active_color = "rgb(40,145,237)";
+  var active_color = "#185284";
 
   var child = 1;
   var length = $("section").length - 1;

@@ -23,8 +23,8 @@
 
         <section>
           <div class="input-field-container">
-            <label class="section-title"><i class="fas fa-upload"></i>Upload csv file</label>
-            <input type="file" id="csvFile" name="csvFile" accept=".csv" />
+            <label class="section-title"><i class="fas fa-upload" style="margin-right: 8px"></i>Upload csv file</label>
+            <input type="file" id="csvFile" name="csvFile" accept=".csv" required autocomplete="off" />
             <label for="csvFile" class="file-upload-label">Choose file</label>
             <span class="file-name" id="file-selected"></span>
           </div>
@@ -32,28 +32,41 @@
 
         <section>
           <div class="input-field-container">
-            <label class="section-title">Map columns</label>
-            <select id="nameSelect" required>
-              <option class="option-placeholder" disabled selected>Select name field..</option>
-            </select>
-            <select id="amountSelect" required>
-              <option class="option-placeholder" disabled selected>Select amount field..</option>
-            </select>
-            <select id="dateSelect" required>
-              <option class="option-placeholder" disabled selected>Select date field..</option>
-            </select>
-
+            <div class="dropdown-section-container">
+              <label class="section-title">Map columns</label>
+              <select id="nameSelect" required autocomplete="off">
+                <option class="option-placeholder" disabled selected>Select name field..</option>
+              </select>
+              <select id="amountSelect" required autocomplete="off">
+                <option class="option-placeholder" disabled selected>Select amount field..</option>
+              </select>
+              <select id="dateSelect" required autocomplete="off">
+                <option class="option-placeholder" disabled selected>Select date field..</option>
+              </select>
+            </div>
+            <hr />
             <div class="radio-section-container">
               <label class="section-title">My file has...</label>
               <div class="radio-container">
                 <label for="drawDepositColumn1">
-                  <input type="radio" name="drawDeposit" id="drawDepositColumn1" class="radio-button" value="true" />
+                  <input type="radio" name="drawDeposit" id="drawDepositColumn1" class="radio-button" value="column" autocomplete="off" />
                   A column value to seperate draws and deposit amounts
                 </label>
+                <div class="drawDepositColumn1-container">
+                  <select id="drawDepositSelect" required autocomplete="off">
+                    <option class="option-placeholder" disabled selected>Select column..</option>
+                  </select>
+                  <select id="drawDepositPositiveSelect" required disabled autocomplete="off">
+                    <option class="option-placeholder" disabled selected>Select value for positive amounts...</option>
+                  </select>
+                  <select id="drawDepositNegativeSelect" required disabled autocomplete="off">
+                    <option class="option-placeholder" disabled selected>Select value for negative amounts...</option>
+                  </select>
+                </div>
               </div>
               <div class="radio-container">
                 <label for="drawDepositColumn2">
-                  <input type="radio" name="drawDeposit" id="drawDepositColumn2" class="radio-button" value="false" />
+                  <input type="radio" name="drawDeposit" id="drawDepositColumn2" class="radio-button" value="values" autocomplete="off" />
                   Negative and positive amount values
                 </label>
               </div>
@@ -76,7 +89,7 @@
 
         <div class="button-container">
           <button class="button" id="prev"><i class="fas fa-arrow-left"></i></button>
-          <button class="button" id="next"><i class="fas fa-arrow-right"></i></button>
+          <button class="button" id="next" type="submit"><i class="fas fa-arrow-right"></i></button>
           <button class="button" id="submit" name="upload"><i class="fas fa-check-circle"></i></button>
         </div>
       </div>
@@ -91,7 +104,7 @@
           </table>
         </div>
       </div>
-      <footer></footer>
     </main>
+    <button id="backToTopButton" onclick="backToTop();" class="button-fixed">Back to filters</button>
   </body>
 </html>
