@@ -173,8 +173,18 @@ function getHeaders(results) {
 function getValues(columnName, results) {
   var selectIdArray = ["drawDepositPositiveSelect", "drawDepositNegativeSelect"];
   selectIdArray.forEach((select) => {
+    $("#" + select + " option:not(:first)").remove();
     results.forEach((transaction) => {
       var value = transaction[columnName];
+
+      try {
+        if (value.indexOf("'") != -1) {
+          value = value.replace("'", "");
+        }
+      } catch (e) {
+        value = "No valid values found";
+        disabled = true;
+      }
 
       if ($("#" + select + " option[value='" + value + "']").val() === undefined) {
         $("#" + select).append(
@@ -192,7 +202,6 @@ function getValues(columnName, results) {
 
 function printData(resultsArray, totalAmount) {
   totalAmount = formatter.format(totalAmount);
-  $("main").css("grid-template-rows", "1fr 1fr");
   $("#output-table").css("visibility", "visible");
   $("#output-table").empty();
   $("#output-table").append("<tr><th>Name</th><th>Amount</th><th>Date</th></th>");
@@ -237,29 +246,87 @@ function processData(array, filter, fromDate, toDate) {
   array.forEach((transaction) => {
     var name = transaction[nameField];
     var nameRegEx = new RegExp(filter, "i");
+    var date = moment(transaction[dateField], "YYYY-MM-DD");
+    var formattedDate = moment(date).format("DD/MM/YYYY");
+
     if (transaction[amountField].indexOf(",") != -1) {
       var amount = parseFloat(transaction[amountField].replace(",", "."));
     } else {
       var amount = parseFloat(transaction[amountField]);
     }
-    var date = moment(transaction[dateField], "YYYY-MM-DD");
-    var afBij = transaction["Af Bij"];
-    var formattedDate = moment(date).format("DD/MM/YYYY");
 
-    if (filter && (!fromDate || !toDate) && afBij == "Af") {
-      if (nameRegEx.test(name) && afBij == "Af") {
-        totalAmount += amount;
-        resultsArray.push({ name: name, amount: amount, date: formattedDate });
+    if ($("#drawDepositColumn1").is(":checked")) {
+      var drawDepositOption = "Column";
+      var drawDepositColumn = $("#drawDepositSelect").val();
+      var drawValue = $("#drawDepositNegativeSelect").val();
+      var depositValue = $("#drawDepositPositiveSelect").val();
+
+      var drawDeposit = transaction[drawDepositColumn];
+      if (drawDeposit == drawValue) {
+        amount = -Math.abs(amount);
       }
-    } else if (filter && fromDate && toDate) {
-      if (nameRegEx.test(name) && date >= fromDate && date <= toDate && afBij == "Af") {
-        totalAmount += amount;
-        resultsArray.push({ name: name, amount: amount, date: formattedDate });
+    } else if ($("#drawDepositColumn2").is(":checked")) {
+      var drawDepositOption = "PosNegValues";
+    } else {
+      var drawDepositOption = "Error";
+    }
+
+    var transactionType = $("#transactionTypeSelect").val();
+
+    if (transactionType == "draws") {
+      if (Math.sign(amount) == -1) {
+        if (filter && (!fromDate || !toDate)) {
+          if (nameRegEx.test(name)) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        } else if (filter && fromDate && toDate) {
+          if (nameRegEx.test(name) && date >= fromDate && date <= toDate) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        } else if (!filter && (fromDate || toDate)) {
+          if (date >= fromDate && date <= toDate) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        }
       }
-    } else if (!filter && (fromDate || toDate)) {
-      if (date >= fromDate && date <= toDate && afBij == "Af") {
-        totalAmount += amount;
-        resultsArray.push({ name: name, amount: amount, date: formattedDate });
+    } else if (transactionType == "deposits") {
+      if (Math.sign(amount) == 1) {
+        if (filter && (!fromDate || !toDate)) {
+          if (nameRegEx.test(name)) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        } else if (filter && fromDate && toDate) {
+          if (nameRegEx.test(name) && date >= fromDate && date <= toDate) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        } else if (!filter && (fromDate || toDate)) {
+          if (date >= fromDate && date <= toDate) {
+            totalAmount += amount;
+            resultsArray.push({ name: name, amount: amount, date: formattedDate });
+          }
+        }
+      }
+    } else {
+      if (filter && (!fromDate || !toDate)) {
+        if (nameRegEx.test(name)) {
+          totalAmount += amount;
+          resultsArray.push({ name: name, amount: amount, date: formattedDate });
+        }
+      } else if (filter && fromDate && toDate) {
+        if (nameRegEx.test(name) && date >= fromDate && date <= toDate) {
+          totalAmount += amount;
+          resultsArray.push({ name: name, amount: amount, date: formattedDate });
+        }
+      } else if (!filter && (fromDate || toDate)) {
+        if (date >= fromDate && date <= toDate) {
+          totalAmount += amount;
+          resultsArray.push({ name: name, amount: amount, date: formattedDate });
+        }
       }
     }
   });

@@ -76,7 +76,7 @@
 
         <section>
           <div class="input-field-container">
-            <label class="section-title">Type searchword</label>
+            <label class="section-title">Enter searchword</label>
             <input type="text" id="filterText" placeholder="Type searchword.." />
           </div>
           <hr />
@@ -84,6 +84,16 @@
             <label class="section-title">Select timeframe</label>
             <input type="text" id="fromDate" placeholder="From.." />
             <input type="text" id="toDate" placeholder="To.." />
+          </div>
+          <hr />
+          <div class="input-field-container">
+            <label class="section-title">Select transaction type</label>
+            <select id="transactionTypeSelect" required autocomplete="off">
+              <option class="option-placeholder" disabled selected>Select..</option>
+              <option value="draws">Draws only</option>
+              <option value="deposits">Deposits only</option>
+              <option value="both">Both draws and deposits</option>
+            </select>
           </div>
         </section>
 
