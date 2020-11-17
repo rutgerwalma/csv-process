@@ -3,45 +3,61 @@ var formatter = new Intl.NumberFormat("nl-NL", {
   currency: "EUR",
 });
 
+function submitClick() {
+  var config = {
+    header: true,
+    skipEmptyLines: true,
+    dynamicTyping: true,
+    delimiter: ";",
+    quoteChar: '"',
+    complete: (results, file) => {
+      var filter = $("#filterText").val();
+      var fromDate = $("#fromDate").val();
+      var toDate = $("#toDate").val();
+
+      fromDate = moment(fromDate, "YYYY-MM-DD");
+      if (!fromDate.isValid()) {
+        fromDate = moment("20000101", "YYYY-MM-DD");
+      }
+
+      toDate = moment(toDate, "YYYY-MM-DD");
+      if (!toDate.isValid()) {
+        toDate = moment();
+      }
+
+      console.log(fromDate);
+      console.log(toDate);
+
+      processData(results.data, filter, fromDate, toDate);
+    },
+    encoding: "utf-8",
+  };
+
+  $("#csvFile").parse({
+    config: config,
+    before: (file, inputElem) => {
+      console.log("Parsing file...", file);
+    },
+    error: (err, file) => {
+      console.log("ERROR:", err, file);
+      firstError = firstError || err;
+      errorCount++;
+    },
+  });
+}
+
 $(document).ready(() => {
   $("#output-table").css("visibility", "hidden");
-  $("#submit").click(() => {
-    var config = {
-      header: true,
-      skipEmptyLines: true,
-      dynamicTyping: true,
-      delimiter: ";",
-      quoteChar: '"',
-      complete: (results, file) => {
-        console.log("Parsing complete:", results, file);
-        var filter = $("#filterText").val();
-        var fromDate = $("#fromDate").val();
-        var toDate = $("#toDate").val();
-        fromDate = moment(fromDate, "YYYY-MM-DD");
-        toDate = moment(toDate, "YYYY-MM-DD");
-        console.log(results.data);
-        processData(results.data, filter, fromDate, toDate);
-      },
-      encoding: "utf-8",
-    };
 
-    $("#csvFile").parse({
-      config: config,
-      before: (file, inputElem) => {
-        console.log("Parsing file...", file);
-      },
-      error: (err, file) => {
-        console.log("ERROR:", err, file);
-        firstError = firstError || err;
-        errorCount++;
-      },
-    });
+  $("#submit").bind("click", function () {
+    return validate();
   });
 
   $("#csvFile").bind("change", function () {
     var fileName = "";
     fileName = $(this).val().replace("C:\\fakepath\\", "");
     $("#file-selected").html(fileName);
+    $("#fileError").text("");
   });
 
   $("#csvFile").bind("change", () => {
@@ -114,11 +130,8 @@ $(document).ready(() => {
 
       $("#csvFile").parse({
         config: config,
-        before: (file, inputElem) => {
-          console.log("Parsing file for headers...", file);
-        },
+        before: (file, inputElem) => {},
         error: (err, file) => {
-          console.log("ERROR:", err, file);
           firstError = firstError || err;
           errorCount++;
         },
@@ -132,18 +145,25 @@ $(document).ready(() => {
     $("#file-selected").html(fileName);
   }
 
-  $("#fromDate").flatpickr({
+  let fromPicker = $("#fromDate").flatpickr({
     altInput: true,
     altFormat: "d-m-Y",
     dateFormat: "Y-m-d",
     maxDate: "today",
+    onClose: function (selectedDates, dateStr, instance) {
+      startPicker.set("minDate", dateStr);
+    },
   });
 
-  $("#toDate").flatpickr({
+  let startPicker = $("#toDate").flatpickr({
     altInput: true,
     altFormat: "d-m-Y",
     dateFormat: "Y-m-d",
+    minDate: $("#fromDate").attr("value"),
     maxDate: "today",
+    onClose: function (selectedDates, dateStr, instance) {
+      fromPicker.set("maxDate", dateStr);
+    },
   });
 
   $("#drawDepositColumn1").on("change", function () {
@@ -420,3 +440,67 @@ $(document).ready(function () {
     $("section").not(currentSection).hide();
   });
 });
+
+function validate() {
+  /* Step 1 */
+  var file = $("#csvFile").get(0).files.length;
+
+  if (!file) {
+    $("#fileError").text("Please upload a CSV file");
+    var fileError = true;
+  } else {
+    $("#fileError").text("");
+    var fileError = false;
+  }
+
+  /* Step 2 */
+  var nameColumn = $("#nameSelect").val();
+  var amountColumn = $("#amountSelect").val();
+  var dateColumn = $("#dateSelect").val();
+
+  if (!nameColumn || !amountColumn || !dateColumn) {
+    $("#columnError").text("Please map all columns");
+    var columnError = true;
+  } else {
+    $("#columnError").text("");
+    var columnError = false;
+  }
+
+  var drawDepositRadio1 = $("#drawDepositColumn1");
+  var drawDepositRadio2 = $("#drawDepositColumn2");
+
+  var drawDepositSelect1 = $("#drawDepositSelect").val();
+  var drawDepositSelect2 = $("#drawDepositPositiveSelect").val();
+  var drawDepositSelect3 = $("#drawDepositNegativeSelect").val();
+
+  if (!drawDepositRadio1.is(":checked") && !drawDepositRadio2.is(":checked")) {
+    $("#drawDepositError").text("Please select an option");
+    var drawDepositError = true;
+  } else {
+    $("#drawDepositError").text("");
+    var drawDepositError = false;
+  }
+
+  if (drawDepositRadio1.is(":checked") && (!drawDepositSelect1 || !drawDepositSelect2 || !drawDepositSelect3)) {
+    $("#drawDepositColumnError").text("Please map all columns and values");
+    var drawDepositColumnError = true;
+  } else {
+    $("#drawDepositColumnError").text("");
+    var drawDepositColumnError = false;
+  }
+
+  if (fileError || columnError || drawDepositError || drawDepositColumnError) {
+    $("#generalError").text("There are some inputs that need fixing, check the previous steps");
+    $("#submit").removeClass("button");
+    $("#submit").addClass("button-noinput");
+    $("#submit").off("click", submitClick);
+    return false;
+  } else {
+    $("#generalError").text("");
+    $("#submit").addClass("button");
+    $("#submit").removeClass("button-noinput");
+    $("#submit").on("click", submitClick);
+    submitClick();
+    return true;
+  }
+}
