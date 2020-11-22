@@ -219,6 +219,9 @@
   .button-fixed {
     display: none;
   }
+  main {
+    grid-template-columns: 100% !important;
+  }
 }
 body {
   margin: 0;
