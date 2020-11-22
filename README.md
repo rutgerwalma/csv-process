@@ -3,7 +3,7 @@
 CSV processing tool for parsing and outputting a csv file focused on bank transactions. Filters can be applied to filter the transaction based on a keyword and timeframe.
 
 # to do's
-* Field validation
+* ~~Field validation~~
 * Make outputting the data look nice
   * ~~Smooth scrolldown to results~~
   * ~~Fade background image into white background~~
