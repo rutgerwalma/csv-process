@@ -25,9 +25,6 @@ function submitClick() {
         toDate = moment();
       }
 
-      console.log(fromDate);
-      console.log(toDate);
-
       processData(results.data, filter, fromDate, toDate);
     },
     encoding: "utf-8",
@@ -35,9 +32,7 @@ function submitClick() {
 
   $("#csvFile").parse({
     config: config,
-    before: (file, inputElem) => {
-      console.log("Parsing file...", file);
-    },
+    before: (file, inputElem) => {},
     error: (err, file) => {
       console.log("ERROR:", err, file);
       firstError = firstError || err;
@@ -75,9 +70,7 @@ $(document).ready(() => {
 
     $("#csvFile").parse({
       config: config,
-      before: (file, inputElem) => {
-        console.log("Parsing file for headers...", file);
-      },
+      before: (file, inputElem) => {},
       error: (err, file) => {
         console.log("ERROR:", err, file);
         firstError = firstError || err;
@@ -103,9 +96,7 @@ $(document).ready(() => {
 
     $("#csvFile").parse({
       config: config,
-      before: (file, inputElem) => {
-        console.log("Parsing file for headers...", file);
-      },
+      before: (file, inputElem) => {},
       error: (err, file) => {
         console.log("ERROR:", err, file);
         firstError = firstError || err;
@@ -178,7 +169,6 @@ $(document).ready(() => {
 
   const removeSpinner = async () => {
     await delay(700);
-    console.log("Waited 1s");
     $(".overlay").fadeOut(300);
   };
 
