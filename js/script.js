@@ -173,6 +173,16 @@ $(document).ready(() => {
   $("#drawDepositColumn2").on("change", function () {
     $(".drawDepositColumn1-container").css("display", "none");
   });
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+  const removeSpinner = async () => {
+    await delay(700);
+    console.log("Waited 1s");
+    $(".overlay").fadeOut(300);
+  };
+
+  removeSpinner();
 });
 
 function getHeaders(results) {
