@@ -121,9 +121,7 @@
 .file-name {
   font-size: 10px;
 }
-.file-upload-label:hover {
-  background-color: #cecece;
-}
+
 .input-container {
   background-color: #fff;
   border: 1px solid #bbb;
